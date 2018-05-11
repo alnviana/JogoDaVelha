@@ -18,57 +18,78 @@ namespace JogoDaVelha {
                                                                     @"        ",
                                                                     @"        ",
                                                                     @"        " };
-        readonly static string verticalLineString = @"│" ;
+        readonly static string verticalLineString = @"│";
         readonly static string horizontalLineString = @"────────┼────────┼────────";
 
         static void Main(string[] args) {
-            //Console.WriteLine(@"  \  /  │ ┌────┐ │");
-            //Console.WriteLine(@"   \/   │ │    │ │");
-            //Console.WriteLine(@"   /\   │ │    │ │");
-            //Console.WriteLine(@"  /  \  │ └────┘ │");
-            //Console.WriteLine(@"────────┼────────┼──────");
-            //Console.WriteLine(@"  \  /  │ ┌────┐ │");
-            //Console.WriteLine(@"   \/   │ │    │ │");
-            //Console.WriteLine(@"   /\   │ │    │ │");
-            //Console.WriteLine(@"  /  \  │ └────┘ │");
-            //Console.WriteLine(@"────────┼────────┼──────");
-            //Console.WriteLine(@"  \  /  │ ┌────┐ │");
-            //Console.WriteLine(@"   \/   │ │    │ │");
-            //Console.WriteLine(@"   /\   │ │    │ │");
-            //Console.WriteLine(@"  /  \  │ └────┘ │");
-            //Console.ReadLine();
+            //Pra fazer:
+            //- Colocar "Régua" para mostrar X e Y
+            //- Escolha aleatória do programa
+            //- Permitir escolha dos jogadores
+            //- Validar vitória
 
-            int[,] boardArray = new int[,] { { 0, 2, 2 }, { 1, 2, 1 }, { 0, 0, 2 } };
-            PrintBoard(boardArray);
+            Console.WriteLine();
+
+            int[,] boardArray = new int[,] { { 1, 2, 2 }, { 1, 2, 1 }, { 0, 0, 2 } };
+            PrintBoard(boardArray, 10);
 
             Console.ReadLine();
         }
 
-        static void PrintBoard(int[,] boardArray) {
+        static void PrintBoard(int[,] boardArray, uint horizontalSpaces = 0) {
+            //O tabuleiro deve ser 3x3
             if (boardArray.Length != 9) {
-                Console.WriteLine("Número de posições do tabuleiro incorreto.");
+                Console.WriteLine("Número incorreto de posições do tabuleiro.");
                 return;
             }
 
-            //Each row of board
-            for (int i = 0; i < 3; i++) {
-                int position1 = boardArray[i, 0];
-                int position2 = boardArray[i, 1];
-                int position3 = boardArray[i, 2];
+            //Coloca na variável os espaços que serão colocados ANTES de cada linha
+            string preSpaces = "";
+            for (int i = 0; i < horizontalSpaces; i++) {
+                preSpaces += " ";
+            }
 
-                //Each text line of row
+            //Cada coluna do tabuleiro
+            for (int i = 0; i < 3; i++) {
+                //Facilita para obter o ID de cada posição
+                int[] position = { boardArray[i, 0], boardArray[i, 1], boardArray[i, 2] };
+
+                //Cada linha de cada "linha do tabuleiro"
                 for (int j = 0; j < 4; j++) {
-                    Console.Write(GetSymbolString(position1, j));
-                    Console.Write(verticalLineString);
-                    Console.Write(GetSymbolString(position2, j));
-                    Console.Write(verticalLineString);
-                    Console.Write(GetSymbolString(position3, j));
-                    Console.Write("\n");
+                    //Escreve os espaços antes de cada linha de texto
+                    Console.Write(preSpaces);
+
+                    for (int k = 0; k < 3; k++) {
+                        //Obtem a cor da peça
+                        ConsoleColor foregroundColor;
+                        switch (position[k]) {
+                            case 1:
+                                foregroundColor = ConsoleColor.DarkRed;
+                                break;
+                            case 2:
+                                foregroundColor = ConsoleColor.Green;
+                                break;
+                            default:
+                                foregroundColor = ConsoleColor.White;
+                                break;
+                        }
+
+                        ConsoleWriteText(GetSymbolString(position[k], j), foregroundColor, ConsoleColor.DarkGray);
+
+                        if (k < 2) {
+                            ConsoleWriteText(verticalLineString, ConsoleColor.White, ConsoleColor.DarkGray);
+                        }
+                    }
+
+                    Console.WriteLine();
                 }
 
-                if (i != 2) {
-                    Console.WriteLine(horizontalLineString);
-                }                
+                if (i < 2) {
+                    Console.Write(preSpaces);
+                    ConsoleWriteText(horizontalLineString, ConsoleColor.White, ConsoleColor.DarkGray);
+                }
+
+                Console.WriteLine();
             }
         }
 
@@ -81,6 +102,14 @@ namespace JogoDaVelha {
                 default:
                     return emptyStringArray[row];
             }
+        }
+
+        static void ConsoleWriteText(string text, ConsoleColor foregroundColor = ConsoleColor.White, ConsoleColor backgroundColor = ConsoleColor.Black) {
+            Console.BackgroundColor = backgroundColor;
+            Console.ForegroundColor = foregroundColor;
+            Console.Write(text);
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }
