@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JogoDaVelha {
     class Program {
@@ -14,26 +10,103 @@ namespace JogoDaVelha {
                                                                         @" │    │ ",
                                                                         @" │    │ ",
                                                                         @" └────┘ " };
-        readonly static string[] emptyStringArray = new string[] {  @"        ",
-                                                                    @"        ",
-                                                                    @"        ",
-                                                                    @"        " };
+        readonly static string[] emptyStringArray = new string[] {      @"        ",
+                                                                        @"        ",
+                                                                        @"        ",
+                                                                        @"        " };
         readonly static string verticalLineString = @"│";
         readonly static string horizontalLineString = @"────────┼────────┼────────";
 
         static void Main(string[] args) {
             //Pra fazer:
-            //- Colocar "Régua" para mostrar X e Y
             //- Escolha aleatória do programa
-            //- Permitir escolha dos jogadores
-            //- Validar vitória
 
+            Game();
+        }
+
+        static void Game() {
+            int[,] boardArray = new int[,] {    { 0, 0, 0 },
+                                                { 0, 0, 0 },
+                                                { 0, 0, 0 } };
+            int currentPlayer = 1;
+            do {
+                Console.Clear();
+                Console.WriteLine();
+                PrintBoard(boardArray, 10);
+
+                int horizontalChoice = 0;
+                do {
+                    if (currentPlayer == 1) {
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                    } else {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    }
+
+                    Console.Write("Jogador {0} (X)", currentPlayer);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(" - Digite a posição horizontal desejada (1-3): ");
+                    string choiceString = Console.ReadLine();
+
+                    int.TryParse(choiceString, out horizontalChoice);
+                    if (horizontalChoice < 1 || horizontalChoice > 3) {
+                        Console.WriteLine("Favor digitar um número entre 1 e 3. ");
+                    }
+                } while (horizontalChoice < 1 || horizontalChoice > 3);
+
+                int verticalChoice = 0;
+                do {
+                    if (currentPlayer == 1) {
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                    } else {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    }
+
+                    Console.Write("Jogador {0} (X)", currentPlayer);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(" - Digite a posição vertical desejada (1-3): ");
+                    string choiceString = Console.ReadLine();
+
+                    int.TryParse(choiceString, out verticalChoice);
+                    if (verticalChoice < 1 || verticalChoice > 3) {
+                        Console.WriteLine("Favor digitar um número entre 1 e 3. ");
+                    }
+                } while (verticalChoice < 1 || verticalChoice > 3);
+
+                if (boardArray[horizontalChoice - 1, verticalChoice - 1] != 0) {
+                    Console.Write("Você não pode escolher uma posição que já possui uma peça! ");
+                    Console.ReadLine();
+                } else {
+                    boardArray[horizontalChoice - 1, verticalChoice - 1] = currentPlayer;
+
+                    if (currentPlayer == 1) {
+                        currentPlayer++;
+                    } else {
+                        currentPlayer--;
+                    }
+                }
+
+            } while (!CheckVictory(boardArray));
+
+            Console.Clear();
             Console.WriteLine();
-
-            int[,] boardArray = new int[,] { { 1, 2, 2 }, { 1, 2, 1 }, { 0, 0, 2 } };
             PrintBoard(boardArray, 10);
 
-            Console.ReadLine();
+            if (currentPlayer == 1) {
+                currentPlayer++;
+                Console.ForegroundColor = ConsoleColor.Green;
+            } else {
+                currentPlayer--;
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+            }
+            Console.WriteLine("O jogador {0} foi o vencedor!", currentPlayer);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine();
+
+            Console.Write("Deseja jogar novamente? (s/n) ");
+            string choice = Console.ReadLine();
+            if (choice.ToLower().Equals("s")) {
+                Game();
+            }
         }
 
         static void PrintBoard(int[,] boardArray, uint horizontalSpaces = 0) {
@@ -111,5 +184,28 @@ namespace JogoDaVelha {
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
         }
+
+        static bool CheckVictory(int[,] boardArray) {
+            for (int i = 0; i < 3; i++) {
+                if (boardArray[i, 0] != 0 && boardArray[i, 0] == boardArray[i, 1] && boardArray[i, 0] == boardArray[i, 2]) {
+                    //Verifica se todos da linha "i" são iguais.
+                    return true;
+                } else if (boardArray[0, i] != 0 && boardArray[0, i] == boardArray[1, i] && boardArray[0, i] == boardArray[2, i]) {
+                    //Verifica se todos da coluna "i" são iguais.
+                    return true;
+                }
+            }
+
+            if (boardArray[0, 0] != 0 && boardArray[0, 0] == boardArray[1, 1] && boardArray[0, 0] == boardArray[2, 2]) {
+                //Verifica diagonal superior esquerda->inferior direita
+                return true;
+            } else if (boardArray[2, 0] != 0 && boardArray[2, 0] == boardArray[1, 1] && boardArray[2, 0] == boardArray[0, 2]) {
+                //Verifica diagonal inferior esquerda->superior direita
+                return true;
+            }
+
+            return false;
+        }
+
     }
 }
