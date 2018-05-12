@@ -21,7 +21,38 @@ namespace JogoDaVelha {
             //Pra fazer:
             //- Escolha aleatória do programa
 
-            Game();
+            Menu();
+        }
+
+        static void Menu() {
+            string[] options = { "Jogadores reais", "Sair" };
+            bool exit = false;
+            do {
+                Console.Clear();
+
+                for (int i = 0; i < options.Length; i++) {
+                    Console.WriteLine("{0} - {1}", i + 1, options[i]);
+                }
+                Console.Write("Escolha o modo de jogo: ");
+                string choiceString = Console.ReadKey().KeyChar.ToString();
+                Console.WriteLine();
+
+                int.TryParse(choiceString, out int choiceNumber);
+                switch (choiceNumber) {
+                    case 1:
+                        Game();
+                        break;
+                    case 2:
+                        exit = true;
+                        break;
+                    default:
+                        Console.WriteLine("Opção inválida.");
+                        Console.ReadKey();
+                        break;
+                }
+            } while (!exit);
+
+                   
         }
 
         static void Game() {
@@ -32,19 +63,12 @@ namespace JogoDaVelha {
             do {
                 Console.Clear();
                 Console.WriteLine();
-                PrintBoard(boardArray, 10);
+                PrintBoard(boardArray, 20);
 
                 if (CheckStuck(boardArray)) {
-                    Console.Write("Deu velha! O jogo será reiniciado. ");
+                    Console.Write("Deu velha! Voltando ao menu... ");
                     Console.ReadLine();
-
-                    boardArray = new int[,] {    { 0, 0, 0 },
-                                                { 0, 0, 0 },
-                                                { 0, 0, 0 } };
-                    currentPlayer = 1;
-                    Console.Clear();
-                    Console.WriteLine();
-                    PrintBoard(boardArray, 10);
+                    return;
                 }
 
                 int horizontalChoice = 0;
@@ -97,12 +121,11 @@ namespace JogoDaVelha {
                         currentPlayer--;
                     }
                 }
-
             } while (!CheckVictory(boardArray));
 
             Console.Clear();
             Console.WriteLine();
-            PrintBoard(boardArray, 10);
+            PrintBoard(boardArray, 20);
 
             if (currentPlayer == 1) {
                 currentPlayer++;
@@ -119,6 +142,8 @@ namespace JogoDaVelha {
             string choice = Console.ReadLine();
             if (choice.ToLower().Equals("s")) {
                 Game();
+            } else {
+                return;
             }
         }
 
