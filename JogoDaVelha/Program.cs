@@ -18,14 +18,11 @@ namespace JogoDaVelha {
         readonly static string horizontalLineString = @"────────┼────────┼────────";
 
         static void Main(string[] args) {
-            //Pra fazer:
-            //- Escolha aleatória do programa
-
             Menu();
         }
 
         static void Menu() {
-            string[] options = { "Jogadores reais", "Sair" };
+            string[] options = { "Jogadores reais", "Ações aleatórias", "Sair" };
             bool exit = false;
             do {
                 Console.Clear();
@@ -43,6 +40,9 @@ namespace JogoDaVelha {
                         Game();
                         break;
                     case 2:
+                        RandomGame();
+                        break;
+                    case 3:
                         exit = true;
                         break;
                     default:
@@ -114,6 +114,53 @@ namespace JogoDaVelha {
                     Console.ReadLine();
                 } else {
                     boardArray[horizontalChoice - 1, verticalChoice - 1] = currentPlayer;                    
+
+                    if (currentPlayer == 1) {
+                        currentPlayer++;
+                    } else {
+                        currentPlayer--;
+                    }
+                }
+            } while (!CheckVictory(boardArray));
+
+            Console.Clear();
+            Console.WriteLine();
+            PrintBoard(boardArray, 20);
+
+            if (currentPlayer == 1) {
+                currentPlayer++;
+                Console.ForegroundColor = ConsoleColor.Green;
+            } else {
+                currentPlayer--;
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+            }
+            Console.WriteLine("O jogador {0} foi o vencedor!", currentPlayer);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.ReadLine();
+        }
+
+        static void RandomGame() {
+            Random random = new Random(Guid.NewGuid().GetHashCode());
+            int[,] boardArray = new int[,] {    { 0, 0, 0 },
+                                                { 0, 0, 0 },
+                                                { 0, 0, 0 } };
+            int currentPlayer = 1;
+            do {
+                Console.Clear();
+                Console.WriteLine();
+                PrintBoard(boardArray, 20);
+
+                if (CheckStuck(boardArray)) {
+                    Console.Write("Deu velha! Voltando ao menu... ");
+                    Console.ReadLine();
+                    return;
+                }
+                
+                int horizontalChoice = random.Next(1, 4);
+                int verticalChoice = random.Next(1, 4);
+
+                if (boardArray[horizontalChoice - 1, verticalChoice - 1] == 0) {
+                    boardArray[horizontalChoice - 1, verticalChoice - 1] = currentPlayer;
 
                     if (currentPlayer == 1) {
                         currentPlayer++;
