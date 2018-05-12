@@ -136,15 +136,7 @@ namespace JogoDaVelha {
             }
             Console.WriteLine("O jogador {0} foi o vencedor!", currentPlayer);
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine();
-
-            Console.Write("Deseja jogar novamente? (s/n) ");
-            string choice = Console.ReadLine();
-            if (choice.ToLower().Equals("s")) {
-                Game();
-            } else {
-                return;
-            }
+            Console.ReadLine();
         }
 
         static void PrintBoard(int[,] boardArray, uint horizontalSpaces = 0) {
