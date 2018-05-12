@@ -34,6 +34,19 @@ namespace JogoDaVelha {
                 Console.WriteLine();
                 PrintBoard(boardArray, 10);
 
+                if (CheckStuck(boardArray)) {
+                    Console.Write("Deu velha! O jogo será reiniciado. ");
+                    Console.ReadLine();
+
+                    boardArray = new int[,] {    { 0, 0, 0 },
+                                                { 0, 0, 0 },
+                                                { 0, 0, 0 } };
+                    currentPlayer = 1;
+                    Console.Clear();
+                    Console.WriteLine();
+                    PrintBoard(boardArray, 10);
+                }
+
                 int horizontalChoice = 0;
                 do {
                     if (currentPlayer == 1) {
@@ -76,7 +89,7 @@ namespace JogoDaVelha {
                     Console.Write("Você não pode escolher uma posição que já possui uma peça! ");
                     Console.ReadLine();
                 } else {
-                    boardArray[horizontalChoice - 1, verticalChoice - 1] = currentPlayer;
+                    boardArray[horizontalChoice - 1, verticalChoice - 1] = currentPlayer;                    
 
                     if (currentPlayer == 1) {
                         currentPlayer++;
@@ -207,5 +220,16 @@ namespace JogoDaVelha {
             return false;
         }
 
+        static bool CheckStuck(int[,] boardArray) {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (boardArray[i, j] == 0) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
     }
 }
